@@ -82,6 +82,8 @@ Layer<Dtype>* GetLayer(const LayerParameter& param) {
     return new WindowDataLayer<Dtype>(param);
   case LayerParameter_LayerType_OUTACCURACY:
     return new OutAccuracyLayer<Dtype>(param);
+  case LayerParameter_LayerType_OUTPRELAYER:
+	return new OutPreLayerInfoLayer<Dtype>(param);
   case LayerParameter_LayerType_NONE:
     LOG(FATAL) << "Layer " << name << " has unspecified type.";
   default:

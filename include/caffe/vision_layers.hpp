@@ -221,6 +221,31 @@ class OutAccuracyLayer : public Layer<Dtype> {
   std::ofstream outFile;
 };
 
+template <typename Dtype>
+class OutPreLayerInfoLayer : public Layer<Dtype> {
+ public:
+  explicit OutPreLayerInfoLayer(const LayerParameter& param)
+      : Layer<Dtype>(param) {}
+  virtual void SetUp(const vector<Blob<Dtype>*>& bottom,
+      vector<Blob<Dtype>*>* top);
+
+ protected:
+  virtual Dtype Forward_cpu(const vector<Blob<Dtype>*>& bottom,
+      vector<Blob<Dtype>*>* top);
+    // The accuracy layer should not be used to compute backward operations.
+  virtual void Backward_cpu(const vector<Blob<Dtype>*>& top,
+      const bool propagate_down, vector<Blob<Dtype>*>* bottom) {
+    NOT_IMPLEMENTED;
+  }
+  bool signFirst;
+  std::ofstream outFile;
+  int num_;
+  int channels_;
+  int height_;
+  int width_;
+};
+
+
 
 template <typename Dtype>
 class ConcatLayer : public Layer<Dtype> {

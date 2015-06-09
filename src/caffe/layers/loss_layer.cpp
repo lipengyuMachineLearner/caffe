@@ -319,6 +319,66 @@ Dtype OutAccuracyLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
   return Dtype(0);
 }
 
+template <typename Dtype>
+void OutPreLayerInfoLayer<Dtype>::SetUp(
+  const vector<Blob<Dtype>*>& bottom, vector<Blob<Dtype>*>* top) {
+  CHECK_LE(bottom.size() , 1) << "OutPreLayerInfoLayer takes more than one blobs as input";
+  CHECK_LE(top->size() , 1) << "OutPreLayerInfoLayer takes more than one blobs as output";
+  string path = this->layer_param_.outprelayer_param().datafile();
+  signFirst = true;
+
+  outFile.open(path);
+
+  num_ = bottom[0]->num();
+  channels_ = bottom[0]->channels();
+  height_ = bottom[0]->height();
+  width_ = bottom[0]->width();
+
+  (*top)[0]->Reshape(num_, channels_, height_, width_);
+
+}
+
+template <typename Dtype>
+Dtype OutPreLayerInfoLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
+    vector<Blob<Dtype>*>* top) {
+
+
+  int count = bottom[0]->count();
+  const Dtype *bottom_data = bottom[0]->cpu_data();
+  Dtype* top_data = (*top)[0]->mutable_cpu_data();
+  caffe_copy(count, bottom_data, top_data);
+
+
+
+
+  int step = width_*channels_;
+  int numStep = step*height_;
+
+  if(signFirst)
+  {
+	  outFile << num_ << "," << channels_ << "," << height_ << "," << width_ << endl;
+	  signFirst = false;
+  }
+
+  for(int n = 0 ; n < num_ ; n++)
+  {
+	  for(int c = 0 ; c < channels_ ; c++)
+	  {
+		  for(int h = 0 ; h < height_; h++)
+		  {
+			  for(int w = 0 ; w < width_ ; w++)
+			  {
+				  outFile << bottom_data[w + h*width_ + c*width_*height_ + n*numStep] << ",";
+			  }
+		  }
+	  }
+
+	    outFile << endl;
+  }
+
+  return Dtype(0);
+}
+
 
 template <typename Dtype>
 void HingeLossLayer<Dtype>::SetUp(const vector<Blob<Dtype>*>& bottom,
@@ -371,5 +431,6 @@ INSTANTIATE_CLASS(EuclideanLossLayer);
 INSTANTIATE_CLASS(AccuracyLayer);
 INSTANTIATE_CLASS(OutAccuracyLayer);
 INSTANTIATE_CLASS(HingeLossLayer);
+INSTANTIATE_CLASS(OutPreLayerInfoLayer);
 
 }  // namespace caffe
