@@ -65,8 +65,14 @@ bool ReadImageToDatum(const string& filename, const int label,
 
 inline bool ReadImageToDatum(const string& filename, const int label,
     Datum* datum) {
-  return ReadImageToDatum(filename, label, 32, 32, datum);//lipengyu changged 0,0 to 32,32
+  return ReadImageToDatum(filename, label, 0, 0, datum);//lipengyu changged 0,0 to 32,32
 }
+
+/*********************************lipengyu add sta**********************/
+bool ReadCSVToDatum(const string& infor,
+   const int channel, const int height, const int width, Datum* datum);
+
+/*********************************lipengyu add over**********************/
 /*
 template <typename Dtype>
 void hdf5_load_nd_dataset_helper(

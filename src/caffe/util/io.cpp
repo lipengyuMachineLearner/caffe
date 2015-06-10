@@ -94,8 +94,8 @@ bool ReadImageToDatum(const string& filename, const int label,
   datum->clear_float_data();
   string* datum_string = datum->mutable_data();
   for (int c = 0; c < cv_img->nChannels; ++c) {
-    for (int h = 0; h < cv_img->width; ++h) {
-      for (int w = 0; w < cv_img->height; ++w) {
+    for (int h = 0; h < cv_img->height; ++h) {
+      for (int w = 0; w < cv_img->width; ++w) {
         datum_string->push_back(
             dataPoint[h*cv_img->widthStep + w*cv_img->nChannels + c]);
       }
@@ -132,6 +132,41 @@ bool ReadImageToDatum(const string& filename, const int label,
   }*/
   return true;
 }
+
+/*********************************lipengyu add sta**********************/
+bool ReadCSVToDatum(const string& infor,
+   const int channel, const int height, const int width, Datum* datum) {
+  
+  std::string::size_type pos1 = 0 , pos2 = 0;
+  pos2 = infor.find(",", pos1);
+  int label = atoi(infor.substr(pos1, pos2-pos1).c_str());
+
+  datum->set_channels(channel);
+  datum->set_height(height);
+  datum->set_width(width);
+  datum->set_label(label);
+  datum->clear_data();
+  datum->clear_float_data();
+ ::google::protobuf::RepeatedField< float >*datum_string = datum->mutable_float_data();
+  //string* datum_string = datum->mutable_data();		
+  for (int c = 0; c < channel; ++c) {
+    for (int h = 0; h < width; ++h) {
+      for (int w = 0; w < height; ++w) {
+		pos1 = pos2+1;
+		pos2 = infor.find(",", pos1);
+		float dataTmp = atof(infor.substr(pos1, pos2-pos1).c_str());
+		datum_string->Add(dataTmp);
+        //datum_string->push_back(dataTmp);
+      }
+    }
+  }
+  return true;
+}
+/*********************************lipengyu add over**********************/
+
+
+
+
 /*
 // Verifies format of data stored in HDF5 file and reshapes blob accordingly.
 template <typename Dtype>
