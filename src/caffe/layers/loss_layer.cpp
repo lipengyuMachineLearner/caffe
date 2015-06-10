@@ -322,7 +322,7 @@ Dtype OutAccuracyLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
 template <typename Dtype>
 void OutPreLayerInfoLayer<Dtype>::SetUp(
   const vector<Blob<Dtype>*>& bottom, vector<Blob<Dtype>*>* top) {
-  CHECK_LE(bottom.size() , 1) << "OutPreLayerInfoLayer takes more than one blobs as input";
+  CHECK_EQ(bottom.size() , 2) << "OutPreLayerInfoLayer takes should be two";
   CHECK_LE(top->size() , 1) << "OutPreLayerInfoLayer takes more than one blobs as output";
   string path = this->layer_param_.outprelayer_param().datafile();
   signFirst = true;
@@ -345,6 +345,7 @@ Dtype OutPreLayerInfoLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& botto
 
   int count = bottom[0]->count();
   const Dtype *bottom_data = bottom[0]->cpu_data();
+  const Dtype *bottom_label = bottom[1]->cpu_data();
   Dtype* top_data = (*top)[0]->mutable_cpu_data();
   caffe_copy(count, bottom_data, top_data);
 
@@ -356,12 +357,14 @@ Dtype OutPreLayerInfoLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& botto
 
   if(signFirst)
   {
-	  outFile << num_ << "," << channels_ << "," << height_ << "," << width_ << endl;
+	  outFile << channels_ << "," << height_ << "," << width_ << "," << endl;
 	  signFirst = false;
   }
 
+
   for(int n = 0 ; n < num_ ; n++)
   {
+	  outFile << static_cast<int>(bottom_label[n]) << ",";
 	  for(int c = 0 ; c < channels_ ; c++)
 	  {
 		  for(int h = 0 ; h < height_; h++)
@@ -372,8 +375,7 @@ Dtype OutPreLayerInfoLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& botto
 			  }
 		  }
 	  }
-
-	    outFile << endl;
+	  outFile << endl;
   }
 
   return Dtype(0);

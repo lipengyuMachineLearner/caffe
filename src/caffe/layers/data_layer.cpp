@@ -33,7 +33,7 @@ void* DataLayerPrefetch(void* layer_pointer) {
   const int batch_size = layer->layer_param_.data_param().batch_size();
   const int crop_size = layer->layer_param_.data_param().crop_size();
   const bool mirror = layer->layer_param_.data_param().mirror();
-
+  const bool floatDataSign = layer->layer_param_.data_param().float_data_sign();
   if (mirror && crop_size == 0) {
     LOG(FATAL) << "Current implementation requires mirror and crop_size to be "
         << "set at the same time.";
@@ -92,18 +92,38 @@ void* DataLayerPrefetch(void* layer_pointer) {
       }
     } else {
       // we will prefer to use data() first, and then try float_data()
-      if (data.size()) {
-        for (int j = 0; j < size; ++j) {
-          Dtype datum_element =
-              static_cast<Dtype>(static_cast<uint8_t>(data[j]));
-          top_data[item_id * size + j] = (datum_element - mean[j]) * scale;
-        }
-      } else {
-        for (int j = 0; j < size; ++j) {
-          top_data[item_id * size + j] =
-              (datum.float_data(j) - mean[j]) * scale;
-        }
-      }
+	  if(floatDataSign == false)
+	  {
+		  if (data.size()) {
+			for (int j = 0; j < size; ++j) {
+			  Dtype datum_element =
+				  static_cast<Dtype>(static_cast<uint8_t>(data[j]));
+			  top_data[item_id * size + j] = (datum_element - mean[j]) * scale;
+			}
+		  } else {
+			for (int j = 0; j < size; ++j) {
+			  top_data[item_id * size + j] =
+				  (datum.float_data(j) - mean[j]) * scale;
+			}
+		  }
+	  }
+	  else
+	  {
+		   ::google::protobuf::RepeatedField< float > data = datum.float_data();
+		    ::google::protobuf::RepeatedField< float >::iterator iter = data.begin();
+		  if (data.size()) {
+			for (int j = 0; j < size; ++j , iter++) {
+			  Dtype datum_element =
+				  static_cast<Dtype>(static_cast<float>(*iter));
+			  top_data[item_id * size + j] = (datum_element - mean[j]) * scale;
+			}
+		  } else {
+			for (int j = 0; j < size; ++j) {
+			  top_data[item_id * size + j] =
+				  (datum.float_data(j) - mean[j]) * scale;
+			}
+		  }
+	  }
     }
 
     if (layer->output_labels_) {
