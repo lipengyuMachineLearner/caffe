@@ -266,13 +266,14 @@ Dtype OutAccuracyLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
     }
 	else
 	{
+		channels = channels < 3 ? channels : 3;
 		IplImage *img = cvCreateImage(cvSize(width, height), IPL_DEPTH_8U, channels);
 		const Dtype *dataPoint = bottom[2]->cpu_data();
 		unsigned char *imgData = (unsigned char *)img->imageData;
 		for(int h = 0 ; h < height ; h++)
 			for(int w = 0 ; w < width ; w++)
 				for(int c = 0 ; c < channels ; c++)
-					imgData[c + w*channels + h*step] = dataPoint[w + h*width + c*width*height + i*numStep]*255;
+					imgData[c + w*channels + h*width*channels] = dataPoint[w + h*width + c*width*height + i*numStep]*255;
 		
 		
 
