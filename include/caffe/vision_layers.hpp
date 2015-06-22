@@ -7,6 +7,7 @@
 #include <utility>
 #include <vector>
 #include <fstream>
+#include <map>
 
 #include "leveldb/db.h"
 //#include "pthread.h"
@@ -245,6 +246,29 @@ class OutPreLayerInfoLayer : public Layer<Dtype> {
   int width_;
 };
 
+
+template <typename Dtype>
+class SubClassMapLayer : public Layer<Dtype> {
+ public:
+  explicit SubClassMapLayer(const LayerParameter& param)
+      : Layer<Dtype>(param) {}
+  virtual void SetUp(const vector<Blob<Dtype>*>& bottom,
+      vector<Blob<Dtype>*>* top);
+
+ protected:
+  virtual Dtype Forward_cpu(const vector<Blob<Dtype>*>& bottom,
+      vector<Blob<Dtype>*>* top);
+    // The accuracy layer should not be used to compute backward operations.
+  virtual void Backward_cpu(const vector<Blob<Dtype>*>& top,
+      const bool propagate_down, vector<Blob<Dtype>*>* bottom) {
+    NOT_IMPLEMENTED;
+  }
+  std::map<int, int> subclass;
+  int num_;
+  int channels_;
+  int height_;
+  int width_;
+};
 
 
 template <typename Dtype>

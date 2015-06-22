@@ -209,6 +209,7 @@ Dtype AccuracyLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
   return Dtype(0);
 }
 
+/**********************li pengyu add start**************************************/
 template <typename Dtype>
 void OutAccuracyLayer<Dtype>::SetUp(
   const vector<Blob<Dtype>*>& bottom, vector<Blob<Dtype>*>* top) {
@@ -382,6 +383,93 @@ Dtype OutPreLayerInfoLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& botto
   return Dtype(0);
 }
 
+template <typename Dtype>
+void SubClassMapLayer<Dtype>::SetUp(
+  const vector<Blob<Dtype>*>& bottom, vector<Blob<Dtype>*>* top) {
+
+	subclass[0] = 0;
+	subclass[1] = 0;
+	subclass[2] = 0;
+	subclass[3] = 0;
+	subclass[4] = 0;
+	subclass[5] = 0;
+	subclass[6] = 0;
+	subclass[7] = 0;
+	subclass[8] = 0;
+	subclass[9] = 3;
+	subclass[10] = 3;
+	subclass[11] = 3;
+	subclass[12] = 1;
+	subclass[13] = 1;
+	subclass[14] = 2;
+	subclass[15] = 1;
+	subclass[16] = 3;
+	subclass[17] = 3;
+	subclass[18] = 3;
+	subclass[19] = 4;
+	subclass[20] = 4;
+	subclass[21] = 4;
+	subclass[22] = 3;
+	subclass[23] = 3;
+	subclass[24] = 3;
+	subclass[25] = 3;
+	subclass[26] = 3;
+	subclass[27] = 3;
+	subclass[28] = 3;
+	subclass[29] = 3;
+	subclass[30] = 3;
+	subclass[31] = 3;
+	subclass[32] = 5;
+	subclass[33] = 4;
+	subclass[34] = 4;
+	subclass[35] = 4;
+	subclass[36] = 4;
+	subclass[37] = 4;
+	subclass[38] = 4;
+	subclass[39] = 4;
+	subclass[40] = 6;
+	subclass[41] = 3;
+	subclass[42] = 3;
+
+  CHECK_EQ(bottom.size(), 1) << "Accuracy Layer takes one blobs as input.";
+  CHECK_EQ(top->size(), 1) << "Accuracy Layer takes 1 output.";
+
+  num_ = bottom[0]->num();
+  channels_ = bottom[0]->channels();
+  height_ = bottom[0]->height();
+  width_ = bottom[0]->width();
+
+  (*top)[0]->Reshape(num_, channels_, height_, width_);
+}
+
+template <typename Dtype>
+Dtype SubClassMapLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
+    vector<Blob<Dtype>*>* top) {
+  Dtype accuracy = 0;
+  Dtype logprob = 0;
+  const Dtype* bottom_data = bottom[0]->cpu_data();
+  Dtype* top_data = (*top)[0]->mutable_cpu_data();
+
+  int step = width_*channels_;
+  int numStep = step*height_;
+  for(int n = 0 ; n < num_ ; n++)
+  {
+	  for(int c = 0 ; c < channels_ ; c++)
+	  {
+		  for(int h = 0 ; h < height_; h++)
+		  {
+			  for(int w = 0 ; w < width_ ; w++)
+			  {
+				  top_data[w + h*width_ + c*width_*height_ + n*numStep] = subclass[static_cast<int>(bottom_data[w + h*width_ + c*width_*height_ + n*numStep])];
+			  }
+		  }
+	  }
+  }
+  return Dtype(0);
+}
+
+/**********************li pengyu add over**************************************/
+
 
 template <typename Dtype>
 void HingeLossLayer<Dtype>::SetUp(const vector<Blob<Dtype>*>& bottom,
@@ -435,5 +523,5 @@ INSTANTIATE_CLASS(AccuracyLayer);
 INSTANTIATE_CLASS(OutAccuracyLayer);
 INSTANTIATE_CLASS(HingeLossLayer);
 INSTANTIATE_CLASS(OutPreLayerInfoLayer);
-
+INSTANTIATE_CLASS(SubClassMapLayer);
 }  // namespace caffe
