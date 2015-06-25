@@ -121,6 +121,24 @@ class ReLULayer : public NeuronLayer<Dtype> {
 };
 
 template <typename Dtype>
+class Log10Layer : public NeuronLayer<Dtype> {
+ public:
+  explicit Log10Layer(const LayerParameter& param)
+      : NeuronLayer<Dtype>(param) {}
+
+ protected:
+  virtual Dtype Forward_cpu(const vector<Blob<Dtype>*>& bottom,
+      vector<Blob<Dtype>*>* top);
+  virtual Dtype Forward_gpu(const vector<Blob<Dtype>*>& bottom,
+      vector<Blob<Dtype>*>* top);
+
+  virtual void Backward_cpu(const vector<Blob<Dtype>*>& top,
+      const bool propagate_down, vector<Blob<Dtype>*>* bottom);
+  virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
+      const bool propagate_down, vector<Blob<Dtype>*>* bottom);
+};
+
+template <typename Dtype>
 class SigmoidLayer : public NeuronLayer<Dtype> {
  public:
   explicit SigmoidLayer(const LayerParameter& param)
@@ -268,6 +286,8 @@ class SubClassMapLayer : public Layer<Dtype> {
   int channels_;
   int height_;
   int width_;
+
+  int type_;
 };
 
 

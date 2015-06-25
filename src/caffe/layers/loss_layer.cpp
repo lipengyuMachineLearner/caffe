@@ -387,52 +387,117 @@ template <typename Dtype>
 void SubClassMapLayer<Dtype>::SetUp(
   const vector<Blob<Dtype>*>& bottom, vector<Blob<Dtype>*>* top) {
 
-	subclass[0] = 0;
-	subclass[1] = 0;
-	subclass[2] = 0;
-	subclass[3] = 0;
-	subclass[4] = 0;
-	subclass[5] = 0;
-	subclass[6] = 0;
-	subclass[7] = 0;
-	subclass[8] = 0;
-	subclass[9] = 3;
-	subclass[10] = 3;
-	subclass[11] = 3;
-	subclass[12] = 1;
-	subclass[13] = 1;
-	subclass[14] = 2;
-	subclass[15] = 1;
-	subclass[16] = 3;
-	subclass[17] = 3;
-	subclass[18] = 3;
-	subclass[19] = 4;
-	subclass[20] = 4;
-	subclass[21] = 4;
-	subclass[22] = 3;
-	subclass[23] = 3;
-	subclass[24] = 3;
-	subclass[25] = 3;
-	subclass[26] = 3;
-	subclass[27] = 3;
-	subclass[28] = 3;
-	subclass[29] = 3;
-	subclass[30] = 3;
-	subclass[31] = 3;
-	subclass[32] = 5;
-	subclass[33] = 4;
-	subclass[34] = 4;
-	subclass[35] = 4;
-	subclass[36] = 4;
-	subclass[37] = 4;
-	subclass[38] = 4;
-	subclass[39] = 4;
-	subclass[40] = 6;
-	subclass[41] = 3;
-	subclass[42] = 3;
+	
 
-  CHECK_EQ(bottom.size(), 1) << "Accuracy Layer takes one blobs as input.";
-  CHECK_EQ(top->size(), 1) << "Accuracy Layer takes 1 output.";
+  CHECK_EQ(bottom.size(), 1) << "Subclass Layer takes one blobs as input.";
+  CHECK_EQ(top->size(), 1) << "Subclass Layer takes 1 output.";
+
+  type_ = this->layer_param_.subclasslayer_param().subclass_type();
+  CHECK_LE(type_, 1) << "the type of subclass should be <= 1 " ;
+  switch(type_)
+  {
+  case 0 :
+	  {//0-Êý×Ö£»1-Æ½Ãæ£¬2-×ÖÄ¸£¬3-Í¼°¸£¬4-¼ýÍ·£¬5-½ûÖ¹Æ½Ãæ£¬6 Ðý×ª¼ýÍ·
+			subclass[0] = 0;
+			subclass[1] = 0;
+			subclass[2] = 0;
+			subclass[3] = 0;
+			subclass[4] = 0;
+			subclass[5] = 0;
+			subclass[6] = 0;
+			subclass[7] = 0;
+			subclass[8] = 0;
+			subclass[9] = 3;
+			subclass[10] = 3;
+			subclass[11] = 3;
+			subclass[12] = 1;
+			subclass[13] = 1;
+			subclass[14] = 2;
+			subclass[15] = 1;
+			subclass[16] = 3;
+			subclass[17] = 3;
+			subclass[18] = 3;
+			subclass[19] = 4;
+			subclass[20] = 4;
+			subclass[21] = 4;
+			subclass[22] = 3;
+			subclass[23] = 3;
+			subclass[24] = 3;
+			subclass[25] = 3;
+			subclass[26] = 3;
+			subclass[27] = 3;
+			subclass[28] = 3;
+			subclass[29] = 3;
+			subclass[30] = 3;
+			subclass[31] = 3;
+			subclass[32] = 5;
+			subclass[33] = 4;
+			subclass[34] = 4;
+			subclass[35] = 4;
+			subclass[36] = 4;
+			subclass[37] = 4;
+			subclass[38] = 4;
+			subclass[39] = 4;
+			subclass[40] = 6;
+			subclass[41] = 3;
+			subclass[42] = 3;
+
+			break;
+	  }
+  case 1:
+	  {// 0-ºÚ°× 1-ºìºÚ 2-»Æ 3-À¶ 4-ºì°× 5-²ÊÉ«
+			subclass[0] = 1;
+			subclass[1] = 1;
+			subclass[2] = 1;
+			subclass[3] = 1;
+			subclass[4] = 1;
+			subclass[5] = 1;
+			subclass[6] = 0;
+			subclass[7] = 1;
+			subclass[8] = 1;
+			subclass[9] = 1;
+			subclass[10] = 1;
+			subclass[11] = 1;
+			subclass[12] = 2;
+			subclass[13] = 4;
+			subclass[14] = 4;
+			subclass[15] = 4;
+			subclass[16] = 1;
+			subclass[17] = 4;
+			subclass[18] = 1;
+			subclass[19] = 1;
+			subclass[20] = 1;
+			subclass[21] = 1;
+			subclass[22] = 1;
+			subclass[23] = 1;
+			subclass[24] = 1;
+			subclass[25] = 1;
+			subclass[26] = 5;
+			subclass[27] = 1;
+			subclass[28] = 1;
+			subclass[29] = 1;
+			subclass[30] = 1;
+			subclass[31] = 1;
+			subclass[32] = 0;
+			subclass[33] = 3;
+			subclass[34] = 3;
+			subclass[35] = 3;
+			subclass[36] = 3;
+			subclass[37] = 3;
+			subclass[38] = 3;
+			subclass[39] = 3;
+			subclass[40] = 3;
+			subclass[41] = 0;
+			subclass[42] = 0;
+
+			break;
+	  }
+  default:
+	  {
+		 LOG(FATAL) << "the type of subclass should be <= 1 ";
+		 return;
+	  }
+  }
 
   num_ = bottom[0]->num();
   channels_ = bottom[0]->channels();
@@ -440,6 +505,7 @@ void SubClassMapLayer<Dtype>::SetUp(
   width_ = bottom[0]->width();
 
   (*top)[0]->Reshape(num_, channels_, height_, width_);
+	
 }
 
 template <typename Dtype>

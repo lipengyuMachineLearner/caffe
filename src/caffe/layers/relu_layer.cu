@@ -59,7 +59,28 @@ void ReLULayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
   }
 }
 
-INSTANTIATE_CLASS(ReLULayer);
+/*****************Lipengyu add sta**************/
+template <typename Dtype>
+Dtype Log10Layer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
+    vector<Blob<Dtype>*>* top) {
+  Forward_cpu(bottom,top);
+  CUDA_POST_KERNEL_CHECK;
+  return Dtype(0);
+}
 
+template <typename Dtype>
+void Log10Layer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
+    const bool propagate_down,
+    vector<Blob<Dtype>*>* bottom) {
+  if (propagate_down) {
+	return Backward_cpu(top,propagate_down,bottom);
+    CUDA_POST_KERNEL_CHECK;
+  }
+}
+
+/*****************Lipengyu add over**************/
+
+INSTANTIATE_CLASS(ReLULayer);
+INSTANTIATE_CLASS(Log10Layer);
 
 }  // namespace caffe

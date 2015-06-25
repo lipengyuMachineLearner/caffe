@@ -86,6 +86,8 @@ Layer<Dtype>* GetLayer(const LayerParameter& param) {
 	return new OutPreLayerInfoLayer<Dtype>(param);
   case LayerParameter_LayerType_SUBCLASSMAPLAYER:
 	return new SubClassMapLayer<Dtype>(param);
+  case LayerParameter_LayerType_LOG10LAYER:
+	return new Log10Layer<Dtype>(param);
   case LayerParameter_LayerType_NONE:
     LOG(FATAL) << "Layer " << name << " has unspecified type.";
   default:

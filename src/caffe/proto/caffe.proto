@@ -103,7 +103,7 @@ message SolverState {
 
 // Update the next available ID when you add a new LayerParameter field.
 //
-// LayerParameter next available ID: 24 (last added: outPreLayer_param)
+// LayerParameter next available ID: 25 (last added: subClassLayer_param)
 message LayerParameter {
   repeated string bottom = 2; // the name of the bottom blobs
   repeated string top = 3; // the name of the top blobs
@@ -114,7 +114,7 @@ message LayerParameter {
   // line above the enum. Update the next available ID when you add a new
   // LayerType.
   //
-  // LayerType next available ID: 32 (last added: SUBCLASSMAPLAYER)
+  // LayerType next available ID: 33 (last added: LOGLAYER)
   enum LayerType {
     // "NONE" layer type is 0th enum element so that we don't cause confusion
     // by defaulting to an existent LayerType (instead, should usually error if
@@ -152,6 +152,7 @@ message LayerParameter {
 	OUTACCURACY = 30;
 	OUTPRELAYER = 31;
 	SUBCLASSMAPLAYER = 32;
+	LOG10LAYER = 33;
   }
   optional LayerType type = 5; // the layer type from the enum above
 
@@ -184,6 +185,7 @@ message LayerParameter {
   // LayerParameter specification.
   optional V0LayerParameter layer = 1;
   optional OutPreLayerParameter outPreLayer_param = 23;
+  optional SubClassLayerParameter subclasslayer_param = 24;
 }
 
 // Message that stores parameters used by ConcatLayer
@@ -198,6 +200,9 @@ message OutPreLayerParameter{
 	optional string datafile = 1 [default = "data.csv"];
 }
 
+message SubClassLayerParameter{
+	optional uint32 subclass_type = 1 [default = 0];
+}
 // Message that stores parameters used by ConvolutionLayer
 message ConvolutionParameter {
   optional uint32 num_output = 1; // The number of outputs for the layer
